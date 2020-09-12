@@ -43,6 +43,24 @@
 
 ##### 阅读原文: https://gitee.com/SnailClimb/JavaGuide/blob/master/docs/java/Multithread/JavaConcurrencyBasicsCommonInterviewQuestionsSummary.md
 
+### Advanced
+#### 1、synchronized 关键字
+>1. 修饰实例方法
+>1. 修饰静态方法
+>1. 修饰代码块
+#### 2、volatile 关键字
+>把变量声明为volatile，这就指示 JVM，这个变量是不稳定的，每次使用它都到主存中进行读取。
+>说白了， volatile 关键字的主要作用就是**保证变量的可见性**然后还有一个作用是**防止指令重排序**。
+
+#### 3、ThreadLocal
+#### 4、线程池
+#### 5、Atomic原子类
+#### 6、AQS
+##### https://gitee.com/SnailClimb/JavaGuide/blob/master/docs/java/Multithread/JavaConcurrencyAdvancedCommonInterviewQuestions.md
+
+
+
+
 
 First Header | Second Header
 :------------: | :-------------:

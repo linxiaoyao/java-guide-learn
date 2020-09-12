@@ -10,9 +10,6 @@ public class DeadLockDemo {
 
     public static void main(String[] args) {
 
-        List<String> languages = Arrays.asList("Java","Python","scala","Shell","R");
-        System.out.println("Language starts with J: ");
-        filterTest(languages,x -> x.startsWith("J"));
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -79,6 +76,9 @@ public class DeadLockDemo {
         }
     }
 
+//    List<String> languages = Arrays.asList("Java","Python","scala","Shell","R");
+//        System.out.println("Language starts with J: ");
+//    filterTest(languages,x -> x.startsWith("J"));
     public static void filterTest(List<String> languages, Predicate<String> condition) {
         languages.stream().filter(x -> condition.test(x)).forEach(x -> System.out.println(x + " "));
     }
