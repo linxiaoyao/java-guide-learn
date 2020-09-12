@@ -16,30 +16,25 @@ public class TargetHandler2 implements InvocationHandler {
 
     private Object target;
 
-    private List<Interceptor> interceptors;
+    private Interceptor interceptor;
 
-    public TargetHandler2(Object name, List<Interceptor> interceptors) {
+    public TargetHandler2(Object name, Interceptor interceptor) {
         this.target = name;
-        this.interceptors = interceptors;
+        this.interceptor = interceptor;
     }
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        //　　在代理真实对象前我们可以添加一些自己的操作
-        interceptors.forEach( x -> x.intercept());
-
-        //    当代理对象调用真实对象的方法时，其会自动的跳转到代理对象关联的handler对象的invoke方法来进行调用
-        method.invoke(target, args);
-
-        //　　在代理真实对象后我们也可以添加一些自己的操作
-        System.out.println("after ===");
+        Invocation invocation = new Invocation(target, method, args);
+        interceptor.intercept(invocation);
 
         return null;
 
     }
 
-    public static Object wrap(Object target, List<Interceptor> interceptorList) {
+    public static Object wrap(Object target, Interceptor interceptor) {
         return Proxy.newProxyInstance(target.getClass().getClassLoader()
-                , target.getClass().getInterfaces(), new TargetHandler2(target, interceptorList));
+                , target.getClass().getInterfaces(), new TargetHandler2(target, interceptor));
     }
+
 }

@@ -1,6 +1,8 @@
 package com.learn.javareflect.interceptor;
 
 
+import com.learn.javareflect.handler.Invocation;
+
 /**
  * @Author: xiazewei
  * @Date: 2020-08-10 17:59
@@ -8,7 +10,14 @@ package com.learn.javareflect.interceptor;
 public class TransactionInterceptor implements Interceptor {
 
     @Override
-    public void interceptor() {
-        System.out.println("LogInterceptor");
+    public void intercept() {
+        System.out.println("TransactionInterceptor");
+    }
+
+    @Override
+    public void intercept(Invocation invocation) throws Exception {
+        System.out.println("TransactionInterceptor begin");
+        invocation.process();
+        System.out.println("TransactionInterceptor after");
     }
 }

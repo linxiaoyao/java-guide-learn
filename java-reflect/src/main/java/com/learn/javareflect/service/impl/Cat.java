@@ -10,7 +10,7 @@ public class Cat implements Animal {
 
     @Override
     public void play() {
-
+        System.out.println("kitty play");
     }
 
     @Override

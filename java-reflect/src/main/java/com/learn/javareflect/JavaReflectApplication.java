@@ -2,6 +2,12 @@ package com.learn.javareflect;
 
 import com.learn.javareflect.equals.StringNew;
 import com.learn.javareflect.handler.AnimalHandler;
+import com.learn.javareflect.handler.TargetHandler;
+import com.learn.javareflect.handler.TargetHandler2;
+import com.learn.javareflect.interceptor.Interceptor;
+import com.learn.javareflect.interceptor.InterceptorChain;
+import com.learn.javareflect.interceptor.LogInterceptor;
+import com.learn.javareflect.interceptor.TransactionInterceptor;
 import com.learn.javareflect.model.SonObject;
 import com.learn.javareflect.model.TargetObject;
 import com.learn.javareflect.service.Animal;
@@ -14,8 +20,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
+import java.util.function.Predicate;
 
 @SpringBootApplication
 public class JavaReflectApplication implements CommandLineRunner {
@@ -58,23 +67,55 @@ public class JavaReflectApplication implements CommandLineRunner {
 
 
     /**
-     * 动态代理模式
+     *
      * @param args
      * @throws Exception
      */
     @Override
     public void run(String... args) throws Exception {
-//        SonObject son = new SonObject("test",12);
-//        System.out.println(son.toString());
+//        testProxy();
+//        testInterceptorInProxy();
+        testInterceptorChainInProxy();
+//        this.testOverrideEquals();
+    }
 
+    /**
+     * 动态代理模式
+     */
+    void testProxy() {
         Animal cat = new Cat();
         AnimalHandler handler = new AnimalHandler(cat);
         Animal animal = (Animal) Proxy.newProxyInstance(handler.getClass().getClassLoader(), cat.getClass().getInterfaces(), handler);
         System.out.println(animal.getClass().getName());
         animal.hello("");
         animal.play();
+    }
 
-//        this.testEquals();
+    void testInterceptorInProxy() {
+        Animal cat = new Cat();
+        List<Interceptor> interceptors = new ArrayList<>();
+        interceptors.add(new LogInterceptor());
+        interceptors.add(new TransactionInterceptor());
+//        TargetHandler handler = new TargetHandler(cat, interceptors);
+//        Animal animal = (Animal)Proxy.newProxyInstance(handler.getClass().getClassLoader(), cat.getClass().getInterfaces(), handler);
+        Animal animal = (Animal)TargetHandler.wrap(cat, interceptors);
+        animal.play();
+    }
+
+    void testInterceptorChainInProxy() {
+        Animal cat = new Cat();
+//        (1)
+//        cat = (Animal) TargetHandler2.wrap(cat, new LogInterceptor());
+//        cat = (Animal) TargetHandler2.wrap(cat, new TransactionInterceptor());
+//        (2) 优化: (1)这样调用看着很别扭，对应目标类来说，只需要了解对他插入了什么拦截就好。
+//        cat = (Animal) new LogInterceptor().plugin(cat);
+//        cat = (Animal) new TransactionInterceptor().plugin(cat);
+//        (3) 优化: 添加责任链
+//        InterceptorChain chain = new InterceptorChain();
+//        chain.addInterceptor(new LogInterceptor());
+//        chain.addInterceptor(new TransactionInterceptor());
+//        cat = (Animal) chain.pluginAll(cat);
+        cat.play();
     }
 //
 //6. 分析
@@ -107,7 +148,7 @@ public class JavaReflectApplication implements CommandLineRunner {
      * 来源：掘金
      * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
      */
-    void testEquals() {
+    void testOverrideEquals() {
         StringNew s1 = new StringNew(new char[]{'a','b'});
         StringNew s2 = new StringNew(new char[]{'a','b'});
         String s3 = new String(new char[]{'a','b'});

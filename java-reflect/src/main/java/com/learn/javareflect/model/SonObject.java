@@ -31,4 +31,10 @@ public class SonObject extends TargetObject {
                 ", age=" + age +
                 '}';
     }
+
+    void test() {
+        //继承执行顺序
+        SonObject son = new SonObject("test",12);
+        System.out.println(son.toString());
+    }
 }
